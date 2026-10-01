@@ -1,0 +1,874 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>공기도 무게가 있을까? | 어게인 실험과학 수학학원</title>
+<meta name="description" content="손으로 만지며 알아보는 공기의 무게 탐험 놀이">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sky:#e6f5ff; --sky2:#bfe4fb; --blue:#2f8fe0; --blue-d:#1f6fb8; --cloud:#ffffff; --yel:#fff5c9; --yel2:#ffd84d; --yel-d:#e0b21f;
+  --ink:#2f3b4a; --sub:#6c7a8a; --line:#d9ebf7; --ok:#2fb36b; --bad:#ee5a52;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--sky);color:var(--ink);font-family:"Noto Sans KR",system-ui,sans-serif;font-weight:500}
+body{min-height:100vh;display:flex;flex-direction:column;-webkit-user-select:none;user-select:none;
+  background:radial-gradient(circle at 12% 18%,#fff 0 60px,transparent 61px),radial-gradient(circle at 88% 30%,#fff 0 46px,transparent 47px),var(--sky)}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+.jua{font-family:"Jua","Noto Sans KR",sans-serif}
+
+/* 풍선 모양 버튼 */
+.bbtn{position:relative;font-family:"Jua",sans-serif;font-size:22px;min-height:62px;min-width:150px;padding:10px 30px;color:#fff;background:var(--blue);
+  border-radius:50% 50% 46% 46%/62% 62% 38% 38%;box-shadow:inset -8px -6px 0 rgba(0,0,0,.12),0 5px 0 var(--blue-d)}
+.bbtn::after{content:"";position:absolute;left:50%;bottom:-9px;width:16px;height:11px;transform:translateX(-50%);background:inherit;clip-path:polygon(50% 0,100% 100%,0 100%)}
+.bbtn:active{transform:translateY(3px)}
+.bbtn:disabled{opacity:.4}
+.bbtn.yel{background:var(--yel2);color:#5a4300;box-shadow:inset -8px -6px 0 rgba(0,0,0,.08),0 5px 0 var(--yel-d)}
+.soft{font-family:"Jua",sans-serif;font-size:18px;min-height:52px;padding:8px 22px;border-radius:999px;background:#fff;color:var(--sub);box-shadow:0 3px 0 var(--line)}
+
+/* 머리글 */
+header{position:sticky;top:0;z-index:30;background:var(--cloud);box-shadow:0 3px 0 var(--line);padding:10px 16px}
+.head-in{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.logo{width:48px;height:56px;flex:none}
+.titles{flex:1;min-width:0}
+.titles .brand{font-family:"Jua",sans-serif;font-size:15px;color:var(--sub)}
+.titles h1{margin:0;font-family:"Jua",sans-serif;font-weight:400;font-size:clamp(24px,4vw,34px);color:var(--blue);line-height:1.1}
+.share{min-width:0;font-size:18px;min-height:54px;padding:8px 22px;display:flex;align-items:center;gap:6px}
+
+/* 탭 */
+nav{max-width:1100px;width:100%;margin:14px auto 0;padding:0 16px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.tab{position:relative;min-height:58px;border-radius:20px;background:#fff;font-family:"Jua",sans-serif;font-size:clamp(15px,2vw,19px);line-height:1.2;padding:6px;
+  display:flex;align-items:center;justify-content:center;gap:6px;border:3px solid transparent;box-shadow:0 3px 0 var(--line);word-break:keep-all;text-align:center}
+.tab .n{width:24px;height:24px;border-radius:50%;background:var(--sky2);color:var(--blue-d);font-size:14px;display:grid;place-items:center;flex:none}
+.tab.on{background:var(--yel);border-color:var(--yel2)}
+.tab.on .n{background:var(--yel2);color:#5a4300}
+.tab .star{position:absolute;top:-9px;right:-4px;font-size:20px;display:none}
+.tab.done .star{display:block;animation:pop .5s}
+
+main{flex:1;max-width:1100px;width:100%;margin:0 auto;padding:16px}
+.panel{display:none;animation:fadein .3s}
+.panel.on{display:block}
+.guide{font-family:"Jua",sans-serif;font-size:clamp(18px,2.4vw,24px);margin:4px 0 12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;word-break:keep-all}
+.guide .q{background:var(--blue);color:#fff;border-radius:12px;padding:2px 10px;font-size:.8em}
+.msg{margin:14px auto 0;max-width:840px;min-height:64px;border-radius:22px;background:var(--cloud);border:3px dashed var(--sky2);padding:12px 18px;font-family:"Jua",sans-serif;
+  font-size:clamp(18px,2.4vw,23px);text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.4;word-break:keep-all}
+.msg.good{background:#eaf8ef;border-color:#9fdcb7;color:#1f7a49;animation:pop .45s}
+.msg.warn{background:#fff6dc;border-color:#ffd56b;color:#8a6400;animation:shake .4s}
+.msg b{font-weight:400;color:var(--blue)}
+.row{display:flex;gap:14px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:16px}
+
+/* 무대 */
+.stage{position:relative;width:100%;aspect-ratio:16/9;border-radius:28px;overflow:hidden;touch-action:none;
+  background:linear-gradient(#f4fbff 0 78%,#fff3c4 78% 100%);box-shadow:0 6px 0 var(--line)}
+.item{position:absolute;transform:translate(-50%,-100%);touch-action:none;cursor:grab;z-index:2}
+.item.c{transform:translate(-50%,-50%)}
+.item>svg,.item>canvas{position:absolute;inset:0;width:100%;height:100%;display:block;overflow:visible}
+.item>canvas{pointer-events:none}
+.item.anim{transition:left .45s cubic-bezier(.3,1.3,.5,1),top .45s cubic-bezier(.3,1.3,.5,1)}
+.item.lift{z-index:6;filter:drop-shadow(0 10px 8px rgba(0,0,0,.18))}
+.hot{position:absolute;z-index:3;cursor:pointer}
+.caption{position:absolute;left:50%;top:4%;transform:translateX(-50%);background:var(--yel);border:3px solid var(--yel2);border-radius:999px;padding:6px 18px;
+  font-family:"Jua",sans-serif;font-size:clamp(15px,2.2vw,22px);white-space:nowrap;opacity:0;transition:opacity .3s;z-index:7}
+.caption.on{opacity:1}
+.tag{position:absolute;font-family:"Jua",sans-serif;background:#fff;border-radius:999px;padding:3px 12px;font-size:clamp(13px,1.7vw,18px);box-shadow:0 2px 0 var(--line);white-space:nowrap}
+.counter{position:absolute;left:3%;top:5%;font-family:"Jua",sans-serif;font-size:clamp(18px,2.6vw,28px);background:#fff;border-radius:18px;padding:6px 16px;box-shadow:0 3px 0 var(--line);z-index:4}
+.counter b{color:var(--blue);font-weight:400;font-size:1.25em}
+.hint{position:absolute;font-family:"Jua",sans-serif;font-size:clamp(14px,2vw,20px);color:#c26b00;background:var(--yel);border-radius:999px;padding:4px 12px;
+  animation:bob 1s infinite;z-index:4;white-space:nowrap;pointer-events:none}
+.records{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:12px;min-height:40px}
+.records span{font-family:"Jua",sans-serif;font-size:18px;background:#fff;border-radius:999px;padding:6px 14px;box-shadow:0 2px 0 var(--line);animation:pop .4s}
+.records span b{color:var(--blue);font-weight:400}
+
+/* 전자저울 */
+.scale{position:absolute;transform:translateX(-50%);z-index:1}
+.scale .plate{height:12px;background:#c8d4e2;border-radius:10px 10px 4px 4px;margin:0 6%}
+.scale .body{background:#eef3f8;border:3px solid #c8d4e2;border-radius:10px 10px 22px 22px;padding:5% 9%}
+.scale .lcd{background:#d4f5d6;color:#1b4d2a;border-radius:10px;padding:2px 12px;text-align:right;font-family:ui-monospace,"Courier New",monospace;font-weight:700;font-size:clamp(20px,3.2vw,36px);letter-spacing:1px}
+.scale .lcd small{font-size:.6em;margin-left:4px}
+.scale .nm{text-align:center;font-family:"Jua",sans-serif;color:var(--sub);font-size:clamp(12px,1.5vw,16px);margin-top:3px}
+
+/* 풍선 저울 */
+.balance{width:100%;aspect-ratio:16/9;display:block;border-radius:28px;background:linear-gradient(#f4fbff 0 82%,#fff3c4 82% 100%);box-shadow:0 6px 0 var(--line);touch-action:none}
+#knob{cursor:grab}
+#pin{cursor:pointer}
+
+/* 우리 방 공기 */
+.room{display:grid;grid-template-columns:1.1fr 1fr;gap:16px}
+.card{background:#fff;border-radius:24px;padding:14px 16px;box-shadow:0 5px 0 var(--line)}
+.sl{display:grid;grid-template-columns:64px 1fr 76px;align-items:center;gap:8px;font-family:"Jua",sans-serif;font-size:22px}
+.sl output{text-align:right;color:var(--blue)}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:56px;background:transparent;touch-action:none}
+input[type=range]::-webkit-slider-runnable-track{height:14px;border-radius:99px;background:var(--sky2)}
+input[type=range]::-moz-range-track{height:14px;border-radius:99px;background:var(--sky2)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:48px;height:48px;margin-top:-17px;border-radius:50%;background:var(--yel2);border:5px solid #fff;box-shadow:0 3px 6px rgba(0,0,0,.25)}
+input[type=range]::-moz-range-thumb{width:40px;height:40px;border-radius:50%;background:var(--yel2);border:5px solid #fff}
+.cube{display:flex;gap:12px;align-items:center;font-family:"Jua",sans-serif;font-size:clamp(16px,2vw,20px);line-height:1.45;word-break:keep-all}
+.cube svg{width:110px;flex:none}
+.big{font-family:"Jua",sans-serif;font-size:clamp(34px,5vw,52px);color:var(--blue);text-align:center;line-height:1.1}
+.cmp{font-family:"Jua",sans-serif;font-size:clamp(16px,2vw,20px);margin-top:10px;word-break:keep-all}
+.icons{display:flex;flex-wrap:wrap;gap:3px;margin-top:4px;align-items:flex-end}
+.icons svg{width:26px;height:34px}
+
+/* 기체 풍선 경주 */
+.gb{position:absolute;width:15%;aspect-ratio:100/170;transform:translateX(-50%);z-index:2}
+.gb svg{width:100%;height:100%;overflow:visible}
+.gb .body{transform-box:view-box;transform-origin:50px 108px;transform:scale(.35);transition:transform .7s cubic-bezier(.3,1.6,.5,1)}
+.gb.full .body{transform:scale(1)}
+.gb .tag{left:50%;top:44%;transform:translateX(-50%);text-align:center;line-height:1.25;opacity:0;transition:opacity .4s}
+.gb.full .tag{opacity:1}
+.gb.drop-ok{outline:4px dashed var(--yel2);outline-offset:6px;border-radius:24px}
+.rod{position:absolute;left:5%;right:5%;top:50%;height:10px;background:#c8a26a;border-radius:6px;z-index:3;transition:opacity .4s}
+.tanks{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+.tank{background:#fff;border-radius:24px;padding:8px;display:flex;flex-direction:column;align-items:center;box-shadow:0 5px 0 var(--line);touch-action:none;cursor:grab;min-height:120px}
+.tank svg{height:78px}
+.tank .nm{font-family:"Jua",sans-serif;font-size:clamp(18px,2.4vw,24px)}
+.tank.used{opacity:.35;cursor:default}
+.ghost{position:fixed;z-index:50;pointer-events:none;transform:translate(-50%,-50%) scale(1.1);filter:drop-shadow(0 8px 8px rgba(0,0,0,.25))}
+
+/* 퀴즈 */
+.boxes{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.box{background:#fff;border-radius:26px;min-height:230px;padding:10px;border:4px dashed var(--sky2);display:flex;flex-direction:column;gap:8px;align-items:stretch}
+.box h3{margin:0;font-family:"Jua",sans-serif;font-weight:400;font-size:clamp(20px,2.8vw,28px);text-align:center;padding:6px;border-radius:16px}
+.box.heavy h3{background:#ffe1e1;color:#c0392b}.box.light h3{background:#dff0ff;color:#1f6fb8}.box.same h3{background:#fff2c2;color:#8a6400}
+.box.hover{border-color:var(--yel2);background:#fffdf2}
+.pool{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.qc{background:var(--yel);border:3px solid var(--yel2);border-radius:20px;padding:12px 8px;min-height:64px;display:flex;align-items:center;justify-content:center;text-align:center;
+  font-family:"Jua",sans-serif;font-size:clamp(17px,2.2vw,21px);touch-action:none;cursor:grab;word-break:keep-all;line-height:1.3}
+.qc.placed{background:#fff;border-color:#9fdcb7;cursor:default;animation:pop .4s;font-size:clamp(15px,1.9vw,19px);min-height:50px;padding:8px}
+.qc.dragging{opacity:.3}
+.qc.back{animation:shake .4s}
+
+/* 바닥글 */
+footer{margin-top:28px;background:var(--blue-d);color:#fff;text-align:center;padding:20px 16px 26px}
+footer .brand{font-family:"Jua",sans-serif;font-size:22px}
+footer .tel{margin-top:4px;font-size:17px;opacity:.95}
+
+.toast{position:fixed;left:50%;bottom:30px;transform:translate(-50%,40px);opacity:0;background:var(--ink);color:#fff;font-family:"Jua",sans-serif;font-size:20px;padding:14px 26px;border-radius:999px;z-index:70;transition:.25s;pointer-events:none}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:60}
+.fly{position:fixed;bottom:-150px;width:58px;z-index:58;pointer-events:none;animation:rise linear forwards}
+.hab{position:fixed;left:6vw;bottom:-220px;width:130px;z-index:57;pointer-events:none;animation:hab 5.5s ease-in-out forwards}
+.hab svg{animation:sway 1.6s ease-in-out infinite;transform-origin:50% 0}
+
+@keyframes fadein{from{opacity:0;transform:translateY(8px)}}
+@keyframes pop{0%{transform:scale(.7)}60%{transform:scale(1.08)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+@keyframes bob{50%{transform:translateY(-6px)}}
+@keyframes rise{to{transform:translate(var(--dx),-135vh) rotate(var(--rot))}}
+@keyframes hab{to{transform:translate(42vw,-135vh)}}
+@keyframes sway{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
+
+@media (max-width:760px){
+  nav{gap:5px}
+  .tab{font-size:13px;min-height:54px;flex-direction:column;gap:2px;border-radius:14px}
+  .tab .n{width:20px;height:20px;font-size:12px}
+  .share span{display:none}
+  .share{padding:8px 16px}
+  .room{grid-template-columns:1fr}
+  .pool{grid-template-columns:1fr 1fr}
+  .box{min-height:160px}
+  .titles .brand{font-size:13px}
+}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<header>
+  <div class="head-in">
+    <svg class="logo" viewBox="0 0 48 56" aria-hidden="true"><ellipse cx="24" cy="22" rx="20" ry="22" fill="#2f8fe0"/><ellipse cx="17" cy="14" rx="5" ry="7" fill="#fff" opacity=".45"/><path d="M20 43 L28 43 L24 48Z" fill="#2f8fe0"/><path d="M24 48 Q20 52 24 56" stroke="#9fb6c9" stroke-width="2" fill="none"/></svg>
+    <div class="titles">
+      <div class="brand">어게인 실험과학 수학학원</div>
+      <h1>공기도 무게가 있을까?</h1>
+    </div>
+    <button class="bbtn yel share" id="share" aria-label="공유하기">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5a4300" stroke-width="2.6" stroke-linecap="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>
+      <span>공유하기</span>
+    </button>
+  </div>
+</header>
+
+<nav id="tabs">
+  <button class="tab on"><span class="n">1</span>상상 돋보기<span class="star">⭐</span></button>
+  <button class="tab"><span class="n">2</span>공기 넣기<span class="star">⭐</span></button>
+  <button class="tab"><span class="n">3</span>주사기 누르기<span class="star">⭐</span></button>
+  <button class="tab"><span class="n">4</span>공기 빼기<span class="star">⭐</span></button>
+  <button class="tab"><span class="n">5</span>풍선 저울<span class="star">⭐</span></button>
+  <button class="tab"><span class="n">6</span>우리 방 공기<span class="star">⭐</span></button>
+  <button class="tab"><span class="n">7</span>기체 풍선 경주<span class="star">⭐</span></button>
+  <button class="tab"><span class="n">8</span>퀴즈 도전<span class="star">⭐</span></button>
+</nav>
+
+<main>
+  <!-- 1 상상 돋보기 -->
+  <section class="panel on">
+    <div class="guide"><span class="q">해 보기</span>상상 돋보기를 끌어서 빈 병을 구석구석 살펴보세요!</div>
+    <div class="stage" id="st0">
+      <div class="caption" id="cap0">눈에 보이지 않는 공기를 점으로 그렸어요</div>
+      <div class="tag" style="left:34%;top:93%;transform:translate(-50%,-50%)">빈 페트병?</div>
+      <div class="item" id="lensBottle" style="width:17%;aspect-ratio:100/240;cursor:default"></div>
+      <div class="item c" id="lens" style="width:28%;aspect-ratio:200/260">
+        <svg viewBox="0 0 200 260">
+          <path d="M152 152 L190 246" stroke="#8a5a32" stroke-width="24" stroke-linecap="round"/>
+          <circle cx="100" cy="100" r="80" fill="rgba(255,255,255,.12)" stroke="#ffc21a" stroke-width="16"/>
+          <path d="M52 70 A56 56 0 0 1 90 42" stroke="#fff" stroke-width="8" fill="none" stroke-linecap="round" opacity=".9"/>
+        </svg>
+        <div class="tag" style="left:50%;top:-6%;transform:translateX(-50%);background:var(--yel2)">상상 돋보기</div>
+      </div>
+    </div>
+    <div class="msg" id="m0">돋보기를 손가락으로 꾹 눌러 병 위로 옮겨 보세요.</div>
+  </section>
+
+  <!-- 2 공기 넣기 -->
+  <section class="panel">
+    <div class="guide"><span class="q">해 보기</span>펌프 마개를 톡톡 눌러 공기를 넣고, 10번마다 저울에 올려 보세요!</div>
+    <div class="stage" id="st1">
+      <div class="counter">누른 횟수 <b id="pc">0</b>번</div>
+      <div class="hint" id="h1" style="left:22%;top:16%">먼저 저울에 올려요 →</div>
+      <div class="item" id="pumpBottle" style="width:14%;aspect-ratio:100/240">
+        <div class="hot nodrag" id="capHot" style="left:10%;right:10%;top:-4%;height:17%"></div>
+      </div>
+      <div class="scale" id="sc1" style="left:70%;top:72%;width:28%"></div>
+    </div>
+    <div class="records" id="rec1"></div>
+    <div class="msg" id="m1">처음 무게부터 재 볼까요? 병을 끌어서 저울 위에 올려 보세요.</div>
+    <div class="row"><button class="soft" id="r1">↺ 처음부터</button></div>
+  </section>
+
+  <!-- 3 주사기 누르기 -->
+  <section class="panel">
+    <div class="guide"><span class="q">왜 그럴까?</span>끝을 막은 주사기의 피스톤을 오른쪽으로 밀어 보세요!</div>
+    <div class="stage" id="st2">
+      <div class="counter">공기 점 <b id="sdots">70</b>개</div>
+      <div class="hint" style="left:12%;top:36%">← → 밀어 보세요</div>
+      <div class="item" id="syringe" style="width:50%;aspect-ratio:300/80;cursor:ew-resize"></div>
+      <div class="scale" id="sc2" style="left:52%;top:62%;width:56%"></div>
+    </div>
+    <div class="msg" id="m2">주사기 안의 공기를 점으로 그렸어요. 누르면 저울 숫자가 바뀔까요?</div>
+  </section>
+
+  <!-- 4 공기 빼기 -->
+  <section class="panel">
+    <div class="guide"><span class="q">해 보기</span>손잡이를 위아래로 끌어 공기를 빼고, 10번마다 저울에 올려 보세요!</div>
+    <div class="stage" id="st3">
+      <div class="counter">펌프질 <b id="vc">0</b>번</div>
+      <div class="hint" id="h3" style="left:22%;top:16%">먼저 저울에 올려요 →</div>
+      <div class="item" id="chamber" style="width:19%;aspect-ratio:200/300">
+        <div class="hot nodrag" id="handleHot" style="left:14%;right:14%;top:-14%;height:36%;cursor:ns-resize"></div>
+      </div>
+      <div class="scale" id="sc3" style="left:70%;top:72%;width:28%"></div>
+    </div>
+    <div class="records" id="rec3"></div>
+    <div class="msg" id="m3">감압 용기예요. 먼저 처음 무게를 재 볼까요? 용기를 저울에 올려 보세요.</div>
+    <div class="row"><button class="soft" id="r3">↺ 처음부터</button></div>
+  </section>
+
+  <!-- 5 풍선 저울 -->
+  <section class="panel">
+    <div class="guide"><span class="q">해 보기</span>손잡이를 돌려 수평을 맞춘 뒤, 핀으로 한쪽 풍선을 터뜨려 보세요!</div>
+    <svg class="balance" id="bal" viewBox="0 0 800 450">
+      <rect x="320" y="420" width="160" height="22" rx="10" fill="#9aa9b8"/>
+      <rect x="392" y="100" width="16" height="322" rx="6" fill="#b7c4d1"/>
+      <path d="M370 172 A40 40 0 0 0 430 172" stroke="#d1dbe5" stroke-width="6" fill="none"/>
+      <rect x="397" y="168" width="6" height="14" fill="#2fb36b"/>
+      <g id="beam">
+        <rect x="110" y="92" width="580" height="16" rx="8" fill="#ffb84d" stroke="#e09a2a" stroke-width="3"/>
+        <path d="M400 100 L400 176" stroke="#e05a4f" stroke-width="4"/>
+      </g>
+      <circle cx="400" cy="100" r="11" fill="#fff" stroke="#9aa9b8" stroke-width="4"/>
+      <text x="400" y="44" text-anchor="middle" font-family="Jua,sans-serif" font-size="22" fill="#6c7a8a">똑같은 풍선 두 개 (지름 약 25 cm)</text>
+      <g id="hangL"></g><g id="hangR"></g>
+      <g id="knob" transform="translate(290 402)">
+        <circle r="44" fill="transparent"/>
+        <circle r="34" fill="#ffd84d" stroke="#e0b21f" stroke-width="5"/>
+        <g id="knobG"><rect x="-4" y="-30" width="8" height="24" rx="4" fill="#8a6400"/></g>
+        <text y="-46" text-anchor="middle" font-family="Jua,sans-serif" font-size="20" fill="#6c7a8a">↻ 돌려요</text>
+      </g>
+      <g id="pin" opacity=".35">
+        <circle cx="30" cy="216" r="40" fill="transparent"/>
+        <path d="M14 216 L58 216" stroke="#8a97a6" stroke-width="5" stroke-linecap="round"/>
+        <circle cx="12" cy="216" r="11" fill="#e05a4f"/>
+        <text x="32" y="252" text-anchor="middle" font-family="Jua,sans-serif" font-size="20" fill="#6c7a8a">핀</text>
+      </g>
+    </svg>
+    <div class="msg" id="m4">두 풍선은 똑같이 불었어요. 그런데 저울이 기울었네요! 노란 손잡이를 돌려 보세요.</div>
+    <div class="row"><button class="soft" id="r4">↺ 처음부터</button></div>
+  </section>
+
+  <!-- 6 우리 방 공기 -->
+  <section class="panel">
+    <div class="guide"><span class="q">계산해 보기</span>막대를 밀어서 방 크기를 정해 보세요!</div>
+    <div class="room">
+      <div class="card">
+        <svg id="roomSvg" viewBox="0 0 400 310" style="width:100%;display:block"></svg>
+        <div class="sl"><span>가로</span><input type="range" id="rw" min="1" max="10" step="0.5" value="5"><output id="ow">5 m</output></div>
+        <div class="sl"><span>세로</span><input type="range" id="rl" min="1" max="10" step="0.5" value="4"><output id="ol">4 m</output></div>
+        <div class="sl"><span>높이</span><input type="range" id="rh" min="2" max="4" step="0.5" value="2.5"><output id="oh">2.5 m</output></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="card cube">
+          <svg viewBox="0 0 110 100"><path d="M15 35 L55 15 L95 35 L55 55Z" fill="#dff0ff" stroke="#2f8fe0" stroke-width="3"/><path d="M15 35 L55 55 L55 95 L15 75Z" fill="#bfe4fb" stroke="#2f8fe0" stroke-width="3"/><path d="M95 35 L55 55 L55 95 L95 75Z" fill="#9fd3f5" stroke="#2f8fe0" stroke-width="3"/><text x="22" y="99" font-family="Jua" font-size="12" fill="#1f6fb8">1 m</text></svg>
+          <div>가로·세로·높이가 <b>1 m</b>인 상자에는<br>1 L 페트병 <b>1000개</b>만큼 공기가 들어가요.<br>이 공기의 무게는 약 <b style="color:var(--blue)">1.2 kg</b>이에요!</div>
+        </div>
+        <div class="card">
+          <div class="cmp" id="boxes" style="margin-top:0;text-align:center"></div>
+          <div class="big" id="kg"></div>
+          <div class="cmp" id="coinTxt"></div><div class="icons" id="coinIc"></div>
+          <div class="cmp" id="kidTxt"></div><div class="icons" id="kidIc"></div>
+        </div>
+      </div>
+    </div>
+    <div class="msg" id="m5">세 막대를 모두 움직여 우리 방 공기의 무게를 알아보세요.</div>
+  </section>
+
+  <!-- 7 기체 풍선 경주 -->
+  <section class="panel">
+    <div class="guide"><span class="q">해 보기</span>기체 통을 끌어 풍선에 넣고, 손을 놓아 보세요!</div>
+    <div class="stage" id="st6" style="aspect-ratio:21/9">
+      <div class="rod" id="rod"></div>
+      <div class="gb" data-i="0" style="left:22%;top:6%"></div>
+      <div class="gb" data-i="1" style="left:50%;top:6%"></div>
+      <div class="gb" data-i="2" style="left:78%;top:6%"></div>
+    </div>
+    <div class="tanks" id="tanks"></div>
+    <div class="row"><button class="bbtn" id="release" disabled>손 놓기!</button><button class="soft" id="r6">↺ 다시 하기</button></div>
+    <div class="msg" id="m6">세 풍선은 크기도 고무도 똑같아요. 넣는 기체만 달라요!</div>
+  </section>
+
+  <!-- 8 퀴즈 도전 -->
+  <section class="panel">
+    <div class="guide"><span class="q">퀴즈</span>카드를 끌어서 알맞은 상자에 넣어 보세요!</div>
+    <div class="boxes">
+      <div class="box heavy" data-b="heavy"><h3>무거워져요</h3></div>
+      <div class="box light" data-b="light"><h3>가벼워져요</h3></div>
+      <div class="box same" data-b="same"><h3>그대로예요</h3></div>
+    </div>
+    <div class="pool" id="pool"></div>
+    <div class="msg" id="m7">공기가 늘어나는지, 줄어드는지, 그대로인지 생각해 보세요.</div>
+    <div class="row"><button class="soft" id="r7">↺ 다시 풀기</button></div>
+  </section>
+</main>
+
+<footer>
+  <div class="brand">어게인 실험과학 수학학원</div>
+  <div class="tel">교육문의 010.2976.5774</div>
+</footer>
+
+<div class="toast" id="toast"></div>
+<canvas id="fx"></canvas>
+
+<script>
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const rand = (a, b) => a + Math.random() * (b - a);
+
+/* ---------- 소리 ---------- */
+let ac;
+const audio = () => ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+function tone(f, d = .15, type = 'sine', at = 0, v = .18) {
+  try {
+    const a = audio(), t = a.currentTime + at, o = a.createOscillator(), g = a.createGain();
+    o.type = type; o.frequency.value = f;
+    g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(.001, t + d);
+    o.connect(g).connect(a.destination); o.start(t); o.stop(t + d);
+  } catch (e) {}
+}
+function noise(d, freq, v, type = 'lowpass') {
+  try {
+    const a = audio(), n = a.sampleRate * d, b = a.createBuffer(1, n, a.sampleRate), ch = b.getChannelData(0);
+    for (let i = 0; i < n; i++) ch[i] = (Math.random() * 2 - 1) * (1 - i / n);
+    const s = a.createBufferSource(), f = a.createBiquadFilter(), g = a.createGain();
+    f.type = type; f.frequency.value = freq; g.gain.value = v;
+    s.buffer = b; s.connect(f).connect(g).connect(a.destination); s.start();
+  } catch (e) {}
+}
+const sfx = {
+  pop: () => { tone(520, .09, 'triangle'); tone(780, .1, 'triangle', .06); },
+  good: () => [523, 659, 784, 1047].forEach((f, i) => tone(f, .25, 'triangle', i * .09)),
+  win: () => [523, 659, 784, 1047, 784, 1047, 1319].forEach((f, i) => tone(f, .3, 'triangle', i * .1)),
+  bad: () => { tone(260, .18, 'square', 0, .07); tone(190, .3, 'square', .16, .07); },
+  pump: () => noise(.18, 900, .35),
+  beep: () => { tone(1568, .08, 'square', 0, .05); tone(2093, .12, 'square', .09, .05); },
+  bang: () => { noise(.35, 2500, .9, 'highpass'); tone(90, .2, 'sine', 0, .3); }
+};
+
+/* ---------- 반짝이 · 축하 ---------- */
+const cv = $('#fx'), cx = cv.getContext('2d');
+let parts = [], running = false;
+const COLORS = ['#ffd84d', '#2f8fe0', '#ff7a7a', '#8fcf5a', '#b38cf0', '#ff9b3d'];
+function resizeFx() { cv.width = innerWidth * devicePixelRatio; cv.height = innerHeight * devicePixelRatio; }
+addEventListener('resize', resizeFx); resizeFx();
+function sparkle(x, y, n = 20) {
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * 6.28, sp = rand(3, 7);
+    parts.push({ x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 1, r: 0, vr: .2, s: rand(6, 11), c: COLORS[i % 6], life: 45 });
+  }
+  if (!running) { running = true; requestAnimationFrame(fxLoop); }
+}
+function sparkleAt(el) { const r = el.getBoundingClientRect(); sparkle(r.left + r.width / 2, r.top + r.height / 2); }
+function fxLoop() {
+  const k = devicePixelRatio; cx.clearRect(0, 0, cv.width, cv.height);
+  parts = parts.filter(p => p.life-- > 0);
+  for (const p of parts) {
+    p.vy += .12; p.x += p.vx; p.y += p.vy; p.r += p.vr;
+    cx.save(); cx.translate(p.x * k, p.y * k); cx.rotate(p.r); cx.globalAlpha = Math.min(1, p.life / 20); cx.fillStyle = p.c;
+    cx.beginPath(); for (let i = 0; i < 10; i++) { const rr = (i % 2 ? p.s / 2.4 : p.s) * k, a = i * Math.PI / 5; cx.lineTo(Math.cos(a) * rr, Math.sin(a) * rr); } cx.fill();
+    cx.restore();
+  }
+  if (parts.length) requestAnimationFrame(fxLoop); else { running = false; cx.clearRect(0, 0, cv.width, cv.height); }
+}
+const balloonSvg = c => `<svg viewBox="0 0 60 110"><ellipse cx="30" cy="32" rx="26" ry="30" fill="${c}"/><ellipse cx="21" cy="21" rx="6" ry="9" fill="#fff" opacity=".45"/><path d="M26 62 L34 62 L30 67Z" fill="${c}"/><path d="M30 67 Q24 80 31 92 T30 110" stroke="#9fb6c9" stroke-width="1.6" fill="none"/></svg>`;
+const HAB = `<svg viewBox="0 0 130 190"><path d="M65 5 C20 5 5 45 18 80 C28 105 48 118 52 130 H78 C82 118 102 105 112 80 C125 45 110 5 65 5Z" fill="#ff7a7a"/><path d="M65 5 C45 30 45 100 56 130 H74 C85 100 85 30 65 5Z" fill="#ffd84d"/><path d="M65 5 C58 40 58 100 62 130 H68 C72 100 72 40 65 5Z" fill="#2f8fe0"/><path d="M54 130 L50 158 M76 130 L80 158" stroke="#8a5a32" stroke-width="3"/><rect x="46" y="156" width="38" height="26" rx="5" fill="#c8894a" stroke="#8a5a32" stroke-width="3"/></svg>`;
+function celebrate(big = true) {
+  sfx.win();
+  for (let i = 0; i < (big ? 12 : 6); i++) {
+    const b = document.createElement('div'); b.className = 'fly';
+    b.style.left = rand(3, 92) + 'vw';
+    b.style.setProperty('--dx', rand(-60, 60) + 'px'); b.style.setProperty('--rot', rand(-15, 15) + 'deg');
+    b.style.animationDuration = rand(3.6, 5.6) + 's'; b.style.animationDelay = rand(0, .7) + 's';
+    b.innerHTML = balloonSvg(COLORS[i % 6]);
+    b.addEventListener('animationend', () => b.remove()); document.body.appendChild(b);
+  }
+  if (big) { const h = document.createElement('div'); h.className = 'hab'; h.innerHTML = HAB; h.addEventListener('animationend', e => e.target === h && h.remove()); document.body.appendChild(h); }
+}
+
+/* ---------- 공통 ---------- */
+function say(el, text, kind = '') { el.className = 'msg'; void el.offsetWidth; if (kind) el.classList.add(kind); el.innerHTML = text; }
+function toast(t) { const el = $('#toast'); el.textContent = t; el.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.remove('on'), 2000); }
+const tabs = $$('.tab'), panels = $$('.panel');
+let active = 0;
+const done = i => tabs[i].classList.add('done');
+const isDone = i => tabs[i].classList.contains('done');
+tabs.forEach((t, i) => t.onclick = () => {
+  active = i;
+  tabs.forEach(x => x.classList.toggle('on', x === t));
+  panels.forEach((p, j) => p.classList.toggle('on', j === i));
+  sfx.pop();
+});
+$('#share').onclick = async () => {
+  const url = location.href;
+  if (navigator.share) { try { await navigator.share({ title: '공기도 무게가 있을까?', text: '어게인 실험과학 수학학원 · 공기도 무게가 있을까?', url }); return; } catch (e) { if (e.name === 'AbortError') return; } }
+  try { await navigator.clipboard.writeText(url); }
+  catch (e) { const ta = document.createElement('textarea'); ta.value = url; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); }
+  toast('주소가 복사됐어요');
+};
+
+/* 무대 안에서 끌기 (위치는 무대 기준 %) */
+function pct(stage, e) { const r = stage.getBoundingClientRect(); return [(e.clientX - r.left) / r.width * 100, (e.clientY - r.top) / r.height * 100]; }
+function setPos(el, x, y) { el.style.left = x + '%'; el.style.top = y + '%'; el.dataset.x = x; el.dataset.y = y; }
+function moveTo(el, x, y) { el.classList.add('anim'); setPos(el, x, y); setTimeout(() => el.classList.remove('anim'), 480); }
+function drag(el, { canStart = () => true, onDrop }) {
+  const st = el.closest('.stage');
+  el.addEventListener('pointerdown', e => {
+    if (e.target.closest('.nodrag') || !canStart()) return;
+    e.preventDefault();
+    const [px, py] = pct(st, e), ox = +el.dataset.x - px, oy = +el.dataset.y - py;
+    el.classList.remove('anim'); el.classList.add('lift'); el.setPointerCapture(e.pointerId);
+    const mv = ev => { const [x, y] = pct(st, ev); setPos(el, clamp(x + ox, 0, 100), clamp(y + oy, 0, 105)); };
+    const up = () => {
+      el.removeEventListener('pointermove', mv); el.removeEventListener('pointerup', up); el.removeEventListener('pointercancel', up);
+      el.classList.remove('lift'); onDrop && onDrop(+el.dataset.x, +el.dataset.y);
+    };
+    el.addEventListener('pointermove', mv); el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up);
+  });
+}
+/* 무대 밖 카드 끌기 (떠다니는 그림자) */
+function ghostDrag(el, { canStart = () => true, onHover, onDrop }) {
+  el.addEventListener('pointerdown', e => {
+    if (!canStart()) return;
+    e.preventDefault(); sfx.pop();
+    const g = el.cloneNode(true); g.classList.add('ghost'); g.style.width = el.offsetWidth + 'px';
+    document.body.appendChild(g); el.classList.add('dragging');
+    const mv = ev => { g.style.left = ev.clientX + 'px'; g.style.top = ev.clientY + 'px'; onHover && onHover(ev.clientX, ev.clientY); };
+    mv(e);
+    const up = ev => {
+      removeEventListener('pointermove', mv); removeEventListener('pointerup', up); removeEventListener('pointercancel', up);
+      g.remove(); el.classList.remove('dragging'); onHover && onHover(-1, -1);
+      if (ev.type === 'pointerup') onDrop(ev.clientX, ev.clientY);
+    };
+    addEventListener('pointermove', mv); addEventListener('pointerup', up); addEventListener('pointercancel', up);
+  });
+}
+const inside = (el, x, y) => { const r = el.getBoundingClientRect(); return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom; };
+
+/* 전자저울 */
+function makeScale(el, name = '전자저울') {
+  el.innerHTML = `<div class="plate"></div><div class="body"><div class="lcd"><span>0.00</span><small>g</small></div><div class="nm">${name}</div></div>`;
+  const out = el.querySelector('.lcd span');
+  return v => {
+    if (v == null) { out.textContent = '0.00'; return; }
+    let n = 0; const t = setInterval(() => { n++; out.textContent = (v * Math.min(1, n / 8)).toFixed(2); if (n >= 8) { clearInterval(t); sfx.beep(); } }, 45);
+  };
+}
+
+/* ---------- 공기 점 ---------- */
+const fields = [];
+class Field {
+  constructor(host, panel, { n = 100, r = 2.2, reg = [0, 0, 1, 1] } = {}) {
+    this.c = document.createElement('canvas'); host.appendChild(this.c);
+    this.x = this.c.getContext('2d'); this.r = r; this.reg = reg; this.panel = panel; this.p = []; this.clip = null;
+    this.spawn(n); fields.push(this);
+  }
+  spawn(n) { const [a, b, c, d] = this.reg; for (let i = 0; i < n; i++) this.p.push({ x: rand(a, c), y: rand(b, d), vx: 0, vy: 0, s: 'in' }); }
+  enter(n, from) { const [a, b, c, d] = this.reg; for (let i = 0; i < n; i++) this.p.push({ x: from[0] + rand(-.02, .02), y: from[1], vx: 0, vy: 0, s: 'go', t: [rand(a, c), rand(b, d)], next: 'in' }); }
+  leave(n, to) {
+    this.p.filter(p => p.s === 'in').sort(() => Math.random() - .5).slice(0, n).forEach(p => { p.s = 'go'; p.t = to; p.next = 'dead'; });
+  }
+  get count() { return this.p.filter(p => p.next !== 'dead').length; }
+  step() {
+    const [a, b, c, d] = this.reg;
+    for (const p of this.p) {
+      if (p.s === 'in') {
+        p.vx = clamp(p.vx + rand(-.0012, .0012), -.004, .004); p.vy = clamp(p.vy + rand(-.0012, .0012), -.004, .004);
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < a) { p.x += (a - p.x) * .4 + .002; p.vx = Math.abs(p.vx); } if (p.x > c) { p.x -= (p.x - c) * .4 + .002; p.vx = -Math.abs(p.vx); }
+        if (p.y < b) { p.y += (b - p.y) * .4 + .002; p.vy = Math.abs(p.vy); } if (p.y > d) { p.y -= (p.y - d) * .4 + .002; p.vy = -Math.abs(p.vy); }
+      } else {
+        const dx = p.t[0] - p.x, dy = p.t[1] - p.y, dist = Math.hypot(dx, dy), sp = .014;
+        if (dist < sp) p.s = p.next; else { p.x += dx / dist * sp; p.y += dy / dist * sp; }
+      }
+    }
+    this.p = this.p.filter(p => p.s !== 'dead');
+  }
+  draw() {
+    const k = devicePixelRatio, w = Math.round(this.c.clientWidth * k), h = Math.round(this.c.clientHeight * k);
+    if (this.c.width !== w || this.c.height !== h) { this.c.width = w; this.c.height = h; }
+    const x = this.x; x.clearRect(0, 0, w, h); x.save();
+    if (this.clip) { x.beginPath(); x.arc(this.clip[0] * k, this.clip[1] * k, this.clip[2] * k, 0, 6.29); x.clip(); }
+    x.fillStyle = '#3a8de0';
+    for (const p of this.p) { x.beginPath(); x.arc(p.x * w, p.y * h, this.r * k, 0, 6.29); x.fill(); }
+    x.restore();
+  }
+}
+const ticks = [];
+(function loop() {
+  for (const f of fields) if (f.panel === active) { f.step(); f.draw(); }
+  ticks.forEach(t => t());
+  requestAnimationFrame(loop);
+})();
+
+/* 그림 */
+const BOTTLE = cap => `<svg viewBox="0 0 100 240"><path d="M38 30 V45 C38 58 12 62 12 80 V220 Q12 234 26 234 H74 Q88 234 88 220 V80 C88 62 62 58 62 45 V30 Z" fill="rgba(210,238,255,.45)" stroke="#8cc3e8" stroke-width="3"/>
+<path d="M14 120 H86 M14 190 H86" stroke="#bfe0f5" stroke-width="2"/><path d="M22 90 Q20 150 24 210" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round" opacity=".8"/>${cap}</svg>`;
+const PLAIN_CAP = `<rect x="34" y="16" width="32" height="18" rx="4" fill="#2f8fe0"/>`;
+const PUMP_CAP = `<rect x="28" y="12" width="44" height="24" rx="6" fill="#ff9b3d" stroke="#d97a1f" stroke-width="2"/><g id="capBtn" style="transition:transform .1s"><rect x="40" y="-2" width="20" height="16" rx="5" fill="#e05a4f"/></g><path d="M44 24 H56" stroke="#fff" stroke-width="3" stroke-linecap="round"/>`;
+
+/* ---------- 1. 상상 돋보기 ---------- */
+const lensBottle = $('#lensBottle'), lens = $('#lens'), m0 = $('#m0');
+lensBottle.innerHTML = BOTTLE(PLAIN_CAP);
+setPos(lensBottle, 34, 88); setPos(lens, 78, 48);
+const lf = new Field(lensBottle, 0, { n: 420, r: 2, reg: [.15, .27, .85, .96] });
+lf.clip = [0, 0, 0];
+const grid = []; for (let i = 0; i < 6; i++) for (let j = 0; j < 10; j++) grid.push({ x: .2 + i * .12, y: .3 + j * .07, seen: false });
+let lensFull = false;
+drag(lens, {});
+ticks.push(() => {
+  if (active !== 0 || lensFull) return;
+  const br = lensBottle.getBoundingClientRect(), lr = lens.getBoundingClientRect();
+  const lx = lr.left + lr.width * .5 - br.left, ly = lr.top + lr.height * (100 / 260) - br.top, r = lr.width * .36;
+  lf.clip = [lx, ly, r];
+  const over = lx + r > 0 && lx - r < br.width && ly + r > 0 && ly - r < br.height;
+  $('#cap0').classList.toggle('on', over);
+  grid.forEach(g => { if (!g.seen && Math.hypot(g.x * br.width - lx, g.y * br.height - ly) < r) g.seen = true; });
+  const seen = grid.filter(g => g.seen).length / grid.length;
+  if (over && !lens.dataset.said) { lens.dataset.said = 1; sfx.pop(); say(m0, '앗, 점이 보여요! 병 위아래를 모두 살펴보세요.'); }
+  if (seen >= .9) {
+    lensFull = true; lf.clip = null; $('#cap0').classList.add('on');
+    say(m0, '🎈 빈 병도 공기로 가득 차 있어요.', 'good'); celebrate(); done(0);
+  }
+});
+
+/* ---------- 2. 공기 넣기 ---------- */
+const pb = $('#pumpBottle'), m1 = $('#m1'), show1 = makeScale($('#sc1'));
+pb.insertAdjacentHTML('afterbegin', BOTTLE(PUMP_CAP));
+const pf = new Field(pb, 1, { n: 140, r: 2, reg: [.16, .36, .84, .95] });
+const HOME1 = [26, 92], PLATE1 = [70, 72];
+let presses = 0, weighed1 = -1, busy1 = false;
+const need1 = () => presses % 10 === 0 && weighed1 !== presses;
+const w1 = () => 32.4 + presses / 10 * .1;
+setPos(pb, ...HOME1);
+function hint1() { $('#h1').style.display = need1() && !busy1 ? '' : 'none'; }
+$('#capHot').addEventListener('pointerdown', e => {
+  e.preventDefault();
+  if (busy1) return;
+  if (need1()) { sfx.bad(); say(m1, presses ? `${presses}번 눌렀어요! 이제 병을 저울에 올려 무게를 재 보세요.` : '먼저 처음 무게를 재야 해요. 병을 저울에 올려 보세요!', 'warn'); return; }
+  if (presses >= 40) return;
+  presses++; $('#pc').textContent = presses; sfx.pump();
+  const b = $('#capBtn'); b.style.transform = 'translateY(6px)'; setTimeout(() => b.style.transform = '', 120);
+  pf.enter(5, [.5, .08]);
+  if (presses % 10 === 0) say(m1, `${presses}번! 공기가 더 들어갔어요. 병을 저울에 올려 볼까요?`); else say(m1, `톡! 공기가 들어가요. (${presses % 10} / 10)`);
+  hint1();
+});
+drag(pb, {
+  canStart: () => { if (busy1) return false; if (!need1()) { say(m1, '지금은 빨간 펌프 마개를 톡톡 눌러 공기를 넣을 차례예요!', 'warn'); return false; } return true; },
+  onDrop: (x, y) => {
+    if (Math.abs(x - PLATE1[0]) < 16 && Math.abs(y - PLATE1[1]) < 22) {
+      busy1 = true; moveTo(pb, ...PLATE1); hint1();
+      setTimeout(() => {
+        const v = w1(); show1(v); weighed1 = presses;
+        $('#rec1').insertAdjacentHTML('beforeend', `<span>${presses}번 : <b>${v.toFixed(2)} g</b></span>`);
+        if (presses === 40) { say(m1, '🎈 공기를 넣을수록 무거워져요.<b>10번 넣을 때마다 약 0.1 g씩 무거워졌어요!</b>', 'good'); celebrate(); done(1); }
+        else if (presses === 0) say(m1, '처음 무게는 32.40 g! 이제 빨간 펌프 마개를 10번 눌러 보세요.', 'good');
+        else say(m1, `${v.toFixed(2)} g! 아까보다 0.10 g 무거워졌어요. 다시 10번 눌러 볼까요?`, 'good');
+        setTimeout(() => { moveTo(pb, ...HOME1); show1(null); busy1 = false; hint1(); }, 2200);
+      }, 450);
+    } else moveTo(pb, ...HOME1);
+  }
+});
+$('#r1').onclick = () => { presses = 0; weighed1 = -1; busy1 = false; $('#pc').textContent = 0; $('#rec1').innerHTML = ''; pf.p = []; pf.spawn(140); show1(null); setPos(pb, ...HOME1); hint1(); say(m1, '처음 무게부터 재 볼까요? 병을 끌어서 저울 위에 올려 보세요.'); };
+
+/* ---------- 3. 주사기 누르기 ---------- */
+const syr = $('#syringe'), m2 = $('#m2'), show2 = makeScale($('#sc2'));
+setPos(syr, 52, 66.5);
+syr.innerHTML = `<svg viewBox="0 0 300 80"><rect x="38" y="4" width="9" height="72" rx="3" fill="#c8d4e2"/>
+<rect x="45" y="18" width="215" height="44" rx="6" fill="rgba(210,238,255,.5)" stroke="#8cc3e8" stroke-width="3"/>
+<g stroke="#8cc3e8" stroke-width="2">${Array.from({ length: 9 }, (_, i) => `<path d="M${80 + i * 20} 18 V${i % 2 ? 26 : 32}"/>`).join('')}</g>
+<path d="M260 33 H280 V47 H260Z" fill="rgba(210,238,255,.8)" stroke="#8cc3e8" stroke-width="2"/><rect x="278" y="27" width="16" height="26" rx="5" fill="#e05a4f"/>
+<g><rect id="plRod" y="36" height="8" fill="#dfe6ee" stroke="#b7c4d1"/><rect id="plThumb" y="8" width="9" height="64" rx="3" fill="#b7c4d1"/><rect id="plHead" y="20" width="12" height="40" rx="3" fill="#4a5563"/></g></svg>`;
+const sf = new Field(syr, 2, { n: 70, r: 2.8, reg: [.2, .3, .85, .72] });
+let px = 50, pressedOnce = false;
+function drawPl() {
+  $('#plHead').setAttribute('x', px); $('#plRod').setAttribute('x', px - 46); $('#plRod').setAttribute('width', 46); $('#plThumb').setAttribute('x', px - 50);
+  sf.reg = [(px + 14) / 300, .3, .85, .72];
+}
+drawPl(); show2(18.36);
+syr.addEventListener('pointerdown', e => {
+  e.preventDefault(); syr.setPointerCapture(e.pointerId);
+  const mv = ev => {
+    const r = syr.getBoundingClientRect(); px = clamp((ev.clientX - r.left) / r.width * 300 + 10, 50, 200); drawPl();
+    const f = (px - 50) / 150;
+    if (f > .6 && !pressedOnce) { pressedOnce = true; say(m2, '🎈 눌러도 공기의 양과 무게는 그대로예요.<b>점 사이만 좁아졌을 뿐, 점 70개와 18.36 g은 그대로!</b>', 'good'); celebrate(); done(2); }
+    else if (f > .2 && !pressedOnce) say(m2, '점들이 좁은 곳으로 모이고 있어요! 저울 숫자를 보세요.');
+  };
+  const up = () => { syr.removeEventListener('pointermove', mv); syr.removeEventListener('pointerup', up); syr.removeEventListener('pointercancel', up); };
+  syr.addEventListener('pointermove', mv); syr.addEventListener('pointerup', up); syr.addEventListener('pointercancel', up);
+  mv(e);
+});
+
+/* ---------- 4. 공기 빼기 ---------- */
+const ch = $('#chamber'), m3 = $('#m3'), show3 = makeScale($('#sc3'));
+ch.insertAdjacentHTML('afterbegin', `<svg viewBox="0 0 200 300">
+<rect x="84" y="60" width="32" height="60" rx="5" fill="#dfe6ee" stroke="#9aa9b8" stroke-width="3"/>
+<g><rect id="vRod" x="97" width="6" fill="#8a97a6"/><rect id="vBar" x="58" width="84" height="14" rx="7" fill="#ff9b3d" stroke="#d97a1f" stroke-width="2"/></g>
+<rect x="10" y="116" width="180" height="16" rx="6" fill="#9aa9b8"/>
+<rect x="16" y="132" width="168" height="160" rx="18" fill="rgba(210,238,255,.45)" stroke="#8cc3e8" stroke-width="4"/>
+<path d="M30 150 Q26 210 32 270" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round" opacity=".8"/></svg>`);
+const vf = new Field(ch, 3, { n: 230, r: 2.2, reg: [.12, .47, .88, .95] });
+const HOME3 = [26, 93], PLATE3 = [70, 72], READ3 = { 0: 352.60, 10: 352.30, 20: 352.08, 30: 351.92 };
+let strokes = 0, weighed3 = -1, busy3 = false, hy = 0, down = false;
+const need3 = () => strokes % 10 === 0 && weighed3 !== strokes;
+function drawHandle() { const y = 4 + hy * 44; $('#vBar').setAttribute('y', y); $('#vRod').setAttribute('y', y + 10); $('#vRod').setAttribute('height', 112 - y); }
+function hint3() { $('#h3').style.display = need3() && !busy3 ? '' : 'none'; }
+setPos(ch, ...HOME3); drawHandle();
+$('#handleHot').addEventListener('pointerdown', e => {
+  e.preventDefault();
+  if (busy3) return;
+  if (need3()) { sfx.bad(); say(m3, strokes ? `${strokes}번 뺐어요! 이제 용기를 저울에 올려 무게를 재 보세요.` : '먼저 처음 무게를 재야 해요. 용기를 저울에 올려 보세요!', 'warn'); return; }
+  if (strokes >= 30) return;
+  const hot = e.currentTarget; hot.setPointerCapture(e.pointerId);
+  const mv = ev => {
+    const r = ch.getBoundingClientRect(); hy = clamp(((ev.clientY - r.top) / r.height * 300 - 4) / 44, 0, 1); drawHandle();
+    if (hy > .9) down = true;
+    if (hy < .1 && down && strokes < 30 && !need3()) {
+      down = false; strokes++; $('#vc').textContent = strokes; sfx.pump();
+      vf.leave(Math.ceil(vf.count * .055), [.5, .36]);
+      if (strokes % 10 === 0) say(m3, `${strokes}번! 공기가 빠져나갔어요. 용기를 저울에 올려 볼까요?`); else say(m3, `쉭! 공기가 빠져요. (${strokes % 10} / 10)`);
+      hint3();
+    }
+  };
+  const up = () => { hot.removeEventListener('pointermove', mv); hot.removeEventListener('pointerup', up); hot.removeEventListener('pointercancel', up); };
+  hot.addEventListener('pointermove', mv); hot.addEventListener('pointerup', up); hot.addEventListener('pointercancel', up);
+});
+drag(ch, {
+  canStart: () => { if (busy3) return false; if (!need3()) { say(m3, '지금은 주황 손잡이를 위아래로 끌어 공기를 뺄 차례예요!', 'warn'); return false; } return true; },
+  onDrop: (x, y) => {
+    if (Math.abs(x - PLATE3[0]) < 16 && Math.abs(y - PLATE3[1]) < 22) {
+      busy3 = true; moveTo(ch, ...PLATE3); hint3();
+      setTimeout(() => {
+        const v = READ3[strokes], prev = READ3[strokes - 10]; show3(v); weighed3 = strokes;
+        $('#rec3').insertAdjacentHTML('beforeend', `<span>${strokes}번 : <b>${v.toFixed(2)} g</b></span>`);
+        if (strokes === 30) { say(m3, '🎈 공기를 뺄수록 가벼워져요.<b>처음보다 0.68 g 가벼워졌어요!</b>', 'good'); celebrate(); done(3); }
+        else if (strokes === 0) say(m3, '처음 무게는 352.60 g! 이제 주황 손잡이를 10번 위아래로 움직여 보세요.', 'good');
+        else say(m3, `${v.toFixed(2)} g! 아까보다 ${(prev - v).toFixed(2)} g 가벼워졌어요. 다시 10번!`, 'good');
+        setTimeout(() => { moveTo(ch, ...HOME3); show3(null); busy3 = false; hint3(); }, 2200);
+      }, 450);
+    } else moveTo(ch, ...HOME3);
+  }
+});
+$('#r3').onclick = () => { strokes = 0; weighed3 = -1; busy3 = false; hy = 0; down = false; drawHandle(); $('#vc').textContent = 0; $('#rec3').innerHTML = ''; vf.p = []; vf.spawn(230); show3(null); setPos(ch, ...HOME3); hint3(); say(m3, '감압 용기예요. 먼저 처음 무게를 재 볼까요? 용기를 저울에 올려 보세요.'); };
+
+/* ---------- 5. 풍선 저울 ---------- */
+const m4 = $('#m4');
+const HANG = `<path d="M0 0 L0 46" stroke="#9fb6c9" stroke-width="2"/>
+<path d="M0 0 L-110 252 M0 0 L110 252" stroke="#c8d4e2" stroke-width="2"/>
+<path d="M-116 250 Q0 278 116 250 Z" fill="#b7c4d1" stroke="#9aa9b8" stroke-width="3"/>
+<g class="bl"><path d="M-6 46 L6 46 L0 54Z" fill="#ff7a7a"/><ellipse cx="0" cy="116" rx="54" ry="62" fill="#ff7a7a"/><ellipse cx="-20" cy="140" rx="11" ry="17" fill="#fff" opacity=".35"/></g>
+<g class="pcs" opacity="0"><path d="M-30 0 l18 -6 l6 14 l-16 4z" fill="#ff7a7a"/><path d="M8 4 l16 -10 l8 12 l-14 6z" fill="#ff6060"/><path d="M-6 10 l10 -2 l2 10 l-12 2z" fill="#ff8f8f"/></g>`;
+$('#hangL').innerHTML = HANG; $('#hangR').innerHTML = HANG;
+let th = -7, vel = 0, target = -7, knobTurn = 0, phase = 'level', pcsY = 116;
+function drawBal() {
+  vel += (target - th) * .02; vel *= .9; th += vel;
+  const a = th * Math.PI / 180, cs = Math.cos(a) * 280, sn = Math.sin(a) * 280;
+  $('#beam').setAttribute('transform', `rotate(${th} 400 100)`);
+  $('#hangL').setAttribute('transform', `translate(${400 - cs} ${100 - sn})`);
+  $('#hangR').setAttribute('transform', `translate(${400 + cs} ${100 + sn})`);
+  $('#knobG').setAttribute('transform', `rotate(${knobTurn})`);
+  const pcs = $('#hangL .pcs'); if (+pcs.getAttribute('opacity')) { pcsY = Math.min(250, pcsY + 9); pcs.setAttribute('transform', `translate(0 ${pcsY - 6})`); }
+}
+ticks.push(() => { if (active === 4) drawBal(); });
+$('#knob').addEventListener('pointerdown', e => {
+  if (phase !== 'level') return;
+  e.preventDefault(); const k = $('#knob'); k.setPointerCapture(e.pointerId);
+  const c = () => { const r = k.querySelector('circle').getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; };
+  const angOf = ev => { const [x0, y0] = c(); return Math.atan2(ev.clientY - y0, ev.clientX - x0) * 180 / Math.PI; };
+  let last = angOf(e);
+  const up = () => { k.removeEventListener('pointermove', mv); k.removeEventListener('pointerup', up); k.removeEventListener('pointercancel', up); };
+  const mv = ev => {
+    const ang = angOf(ev); let d = ang - last; if (d > 180) d -= 360; if (d < -180) d += 360;
+    knobTurn += d; last = ang;
+    const prev = target; target = clamp(-7 + knobTurn / 20, -12, 12);
+    if (Math.abs(target) < .5 || prev * target < 0) {
+      target = 0; phase = 'pop'; up();
+      sfx.good(); sparkleAt($('#beam'));
+      say(m4, '수평이 됐어요! 이제 핀을 톡 눌러 왼쪽 풍선을 터뜨려 보세요.', 'good');
+      $('#pin').setAttribute('opacity', 1);
+    }
+  };
+  k.addEventListener('pointermove', mv); k.addEventListener('pointerup', up); k.addEventListener('pointercancel', up);
+});
+$('#pin').addEventListener('pointerdown', e => {
+  e.preventDefault();
+  if (phase !== 'pop') { if (phase === 'level') { sfx.bad(); say(m4, '먼저 노란 손잡이를 돌려 수평을 맞춰요!', 'warn'); } return; }
+  phase = 'done';
+  const pin = $('#pin'); pin.style.transition = 'transform .35s ease-in'; pin.style.transform = 'translate(16px,0)';
+  setTimeout(() => {
+    sfx.bang(); sparkleAt($('#hangL .bl'));
+    $('#hangL .bl').setAttribute('opacity', 0); $('#hangL .pcs').setAttribute('opacity', 1); pcsY = 116;
+    pin.setAttribute('opacity', .35); pin.style.transform = '';
+    say(m4, '펑! 고무 조각은 같은 쪽 접시에 떨어졌어요. 저울이 어떻게 될까요?');
+    setTimeout(() => { target = 9; }, 600);
+    setTimeout(() => { say(m4, '🎈 공기가 빠진 쪽이 가벼워졌어요.<b>풍선 속 공기에도 무게가 있었던 거예요!</b>', 'good'); celebrate(); done(4); }, 2200);
+  }, 350);
+});
+$('#r4').onclick = () => {
+  th = -7; vel = 0; target = -7; knobTurn = 0; phase = 'level';
+  $('#hangL .bl').setAttribute('opacity', 1); $('#hangL .pcs').setAttribute('opacity', 0); $('#hangL .pcs').removeAttribute('transform'); $('#pin').setAttribute('opacity', .35);
+  say(m4, '두 풍선은 똑같이 불었어요. 그런데 저울이 기울었네요! 노란 손잡이를 돌려 보세요.');
+};
+
+/* ---------- 6. 우리 방 공기 ---------- */
+const m5 = $('#m5'), touched = new Set();
+const fmt = n => n.toLocaleString('ko-KR');
+const COIN = `<svg viewBox="0 0 26 34"><g fill="#e8a24a" stroke="#b5762a" stroke-width="1.5">${[28, 22, 16, 10, 4].map(y => `<ellipse cx="13" cy="${y + 2}" rx="11" ry="4"/>`).join('')}</g></svg>`;
+const KID = (w = 1) => `<svg viewBox="0 0 26 34"><defs><clipPath id="kc${Math.round(w * 100)}"><rect width="${26 * w}" height="34"/></clipPath></defs><g clip-path="url(#kc${Math.round(w * 100)})"><circle cx="13" cy="7" r="6" fill="#ffcf9e"/><path d="M5 30 V18 Q5 13 13 13 Q21 13 21 18 V30Z" fill="#ff9b3d"/><rect x="8" y="28" width="4" height="6" fill="#2f3b4a"/><rect x="14" y="28" width="4" height="6" fill="#2f3b4a"/></g></svg>`;
+function room() {
+  const W = +$('#rw').value, L = +$('#rl').value, H = +$('#rh').value, V = W * L * H, kg = V * 1.2;
+  $('#ow').textContent = W + ' m'; $('#ol').textContent = L + ' m'; $('#oh').textContent = H + ' m';
+  const s = 18, c30 = .866, P = [200 + c30 * (L - W) * s / 2, 290], X = [c30 * W * s, -.5 * W * s], Y = [-c30 * L * s, -.5 * L * s], Z = [0, -H * s];
+  const pt = (...v) => v.reduce((a, b) => [a[0] + b[0], a[1] + b[1]], P).join(',');
+  $('#roomSvg').innerHTML = `
+    <polygon points="${pt()} ${pt(X)} ${pt(X, Z)} ${pt(Z)}" fill="#9fd3f5" stroke="#2f8fe0" stroke-width="3"/>
+    <polygon points="${pt()} ${pt(Y)} ${pt(Y, Z)} ${pt(Z)}" fill="#bfe4fb" stroke="#2f8fe0" stroke-width="3"/>
+    <polygon points="${pt(Z)} ${pt(X, Z)} ${pt(X, Y, Z)} ${pt(Y, Z)}" fill="#e6f5ff" stroke="#2f8fe0" stroke-width="3"/>
+    <text x="${P[0] + X[0] / 2 + 8}" y="${P[1] + X[1] / 2 + 22}" font-family="Jua" font-size="18" fill="#1f6fb8">가로 ${W} m</text>
+    <text x="${P[0] + Y[0] / 2 - 8}" y="${P[1] + Y[1] / 2 + 22}" text-anchor="end" font-family="Jua" font-size="18" fill="#1f6fb8">세로 ${L} m</text>
+    <text x="${Math.min(325, P[0] + X[0] + 8)}" y="${P[1] + X[1] + Z[1] / 2 + 6}" font-family="Jua" font-size="18" fill="#1f6fb8" stroke="#fff" stroke-width="4" paint-order="stroke">높이 ${H} m</text>`;
+  $('#boxes').textContent = `1 m 상자가 ${fmt(V)}개 들어가는 방이에요`;
+  $('#kg').textContent = `공기 약 ${fmt(Math.round(kg * 10) / 10)} kg`;
+  const coins = Math.round(kg * 1000 / 1.22 / 100) * 100, unit = coins > 40000 ? 10000 : 1000, stacks = coins / unit;
+  $('#coinTxt').innerHTML = `10원짜리 동전 약 <b style="color:#b5762a;font-weight:400">${fmt(coins)}개</b>만큼 무거워요 <small>(동전 탑 1개 = ${fmt(unit)}개)</small>`;
+  $('#coinIc').innerHTML = COIN.repeat(Math.max(1, Math.round(stacks)));
+  const kids = kg / 35;
+  $('#kidTxt').innerHTML = `35 kg 친구 약 <b style="color:#ff9b3d;font-weight:400">${fmt(Math.round(kids * 10) / 10)}명</b>의 몸무게예요`;
+  $('#kidIc').innerHTML = KID().repeat(Math.floor(kids)) + (kids % 1 > .05 ? KID(kids % 1) : '');
+}
+['rw', 'rl', 'rh'].forEach(id => $('#' + id).addEventListener('input', () => {
+  room(); touched.add(id);
+  if (touched.size === 3 && !isDone(5)) { say(m5, '🎈 공기도 모이면 아주 무거워요.<b>우리 방 공기는 친구 몇 명만큼 무거운가요?</b>', 'good'); celebrate(); done(5); }
+}));
+room();
+
+/* ---------- 7. 기체 풍선 경주 ---------- */
+const GAS = {
+  he: { nm: '헬륨', w: '0.2', c: '#b38cf0' },
+  air: { nm: '공기', w: '1.2', c: '#7cc6f5' },
+  co2: { nm: '이산화 탄소', w: '1.8', c: '#8d99a6' }
+};
+const m6 = $('#m6'), gbs = $$('.gb');
+const BAL = `<svg viewBox="0 0 100 170"><path d="M50 112 Q42 130 52 148 T50 230" stroke="#9fb6c9" stroke-width="2.5" fill="none"/><g class="body"><ellipse cx="50" cy="56" rx="40" ry="50" fill="#ff7a7a"/><ellipse cx="36" cy="38" rx="9" ry="14" fill="#fff" opacity=".4"/><path d="M44 106 L56 106 L50 113Z" fill="#ff7a7a"/></g></svg><div class="tag"></div>`;
+const tankSvg = c => `<svg viewBox="0 0 50 90"><rect x="19" y="2" width="12" height="12" rx="3" fill="#6c7a8a"/><rect x="8" y="12" width="34" height="74" rx="14" fill="${c}"/><rect x="14" y="22" width="6" height="50" rx="3" fill="#fff" opacity=".4"/></svg>`;
+let filled = [null, null, null], released = false;
+function buildRace() {
+  released = false; filled = [null, null, null];
+  $('#rod').style.opacity = 1; $('#release').disabled = true;
+  gbs.forEach(g => { g.className = 'gb'; g.style.transition = 'none'; g.style.top = '6%'; g.innerHTML = BAL; });
+  $('#tanks').innerHTML = '';
+  Object.entries(GAS).forEach(([k, g]) => {
+    const t = document.createElement('div'); t.className = 'tank';
+    t.innerHTML = tankSvg(g.c) + `<span class="nm">${g.nm}</span>`;
+    ghostDrag(t, {
+      canStart: () => !t.classList.contains('used') && !released,
+      onHover: (x, y) => gbs.forEach(b => b.classList.toggle('drop-ok', filled[b.dataset.i] === null && inside(b, x, y))),
+      onDrop: (x, y) => {
+        const b = gbs.find(b => filled[b.dataset.i] === null && inside(b, x, y));
+        if (!b) return;
+        filled[b.dataset.i] = k; t.classList.add('used');
+        b.classList.add('full'); b.querySelector('.tag').innerHTML = `${g.nm}<br>1L ${g.w}g`;
+        noise(.5, 600, .3); setTimeout(() => sparkleAt(b), 300);
+        if (filled.every(Boolean)) { $('#release').disabled = false; say(m6, '세 풍선을 모두 채웠어요! 이제 <b>손 놓기!</b> 버튼을 눌러 보세요.'); }
+        else say(m6, `${g.nm}을(를) 넣었어요! 다른 풍선과 크기가 똑같아요.`);
+      }
+    });
+    $('#tanks').appendChild(t);
+  });
+}
+$('#release').onclick = () => {
+  if (released) return; released = true; $('#release').disabled = true; $('#rod').style.opacity = 0;
+  sfx.pop();
+  gbs.forEach(b => {
+    const k = filled[b.dataset.i];
+    b.style.transition = k === 'he' ? 'top 3.6s cubic-bezier(.4,0,.8,.6)' : k === 'air' ? 'top 4.5s linear' : 'top .9s cubic-bezier(.55,0,1,.6)';
+    b.style.top = k === 'he' ? '-130%' : '42%';
+  });
+  setTimeout(() => { say(m6, '🎈 헬륨 풍선은 둥실 올라가고, 공기 풍선은 천천히, 이산화 탄소 풍선은 빨리 떨어졌어요!<b>같은 1 L라도 기체마다 무게가 달라요.</b>', 'good'); celebrate(); done(6); }, 3800);
+};
+$('#r6').onclick = () => { buildRace(); say(m6, '세 풍선은 크기도 고무도 똑같아요. 넣는 기체만 달라요!'); };
+buildRace();
+
+/* ---------- 8. 퀴즈 도전 ---------- */
+const QZ = [
+  ['페트병에 공기 넣기', 'heavy'], ['감압기에서 공기 빼기', 'light'], ['튜브에 바람 넣기', 'heavy'],
+  ['터뜨린 풍선 쪽', 'light'], ['자전거 바퀴 바람 빼기', 'light'], ['끝을 막은 주사기 누르기', 'same']
+];
+const m7 = $('#m7'), boxes = $$('.box');
+let right = 0;
+function buildQuiz() {
+  right = 0; $$('.box .qc').forEach(c => c.remove()); $('#pool').innerHTML = '';
+  [...QZ].sort(() => Math.random() - .5).forEach(([t, a]) => {
+    const c = document.createElement('div'); c.className = 'qc'; c.textContent = t;
+    ghostDrag(c, {
+      canStart: () => !c.classList.contains('placed'),
+      onHover: (x, y) => boxes.forEach(b => b.classList.toggle('hover', inside(b, x, y))),
+      onDrop: (x, y) => {
+        const b = boxes.find(b => inside(b, x, y)); if (!b) return;
+        if (b.dataset.b === a) {
+          c.classList.add('placed'); b.appendChild(c); sfx.good(); sparkleAt(c); right++;
+          if (right === QZ.length) { say(m7, '🎈 모두 맞혔어요! 이제 공기의 무게 박사예요!', 'good'); celebrate(); done(7); }
+          else say(m7, `딩동댕! (${right} / ${QZ.length})`, 'good');
+        } else {
+          sfx.bad(); c.classList.remove('back'); void c.offsetWidth; c.classList.add('back');
+          say(m7, '다시 생각해 봐요! 공기가 늘어나나요, 줄어드나요, 그대로인가요?', 'warn');
+        }
+      }
+    });
+    $('#pool').appendChild(c);
+  });
+}
+$('#r7').onclick = () => { buildQuiz(); say(m7, '공기가 늘어나는지, 줄어드는지, 그대로인지 생각해 보세요.'); };
+buildQuiz();
+</script>
+</body>
+</html>
